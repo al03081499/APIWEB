@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title> Evidencia 3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --fondo-claro: #f4f4f5;
+            --fondo-oscuro: #111827;
+            --tarjeta-clara: #ffffff;
+            --tarjeta-oscura: #1f2937;
+            --texto-claro: #111827;
+            --texto-oscuro: #e5e7eb;
+            --principal: #2563eb;
+            --principal-suave: #bfdbfe;
+            --error: #ef4444;
+        }
+
+        body {
+            margin: 0;
+            padding: 16px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--fondo-claro);
+            color: var(--texto-claro);
+            display: flex;
+            justify-content: center;
+        }
+
+        body.modo-oscuro {
+            background: var(--fondo-oscuro);
+            color: var(--texto-oscuro);
+        }
+
+        .contenedor {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+        }
+
+        body.modo-oscuro .contenedor {
+            background: #1f2937;
+            color: var(--texto-oscuro);
+        }
+
+        
+        .cabecera {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .titulo {
+            font-size: 24px;
+            font-weight: bold;
+            animation: brilloTitulo 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes brilloTitulo {
+            from { color: #2563eb; }
+            to   { color: #7c3aed; }
+        }
+
+        .boton-tema {
+            padding: 6px 12px;
+            background: #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #9ca3af;
+        }
+
+        body.modo-oscuro .boton-tema {
+            background: #111827;
+            color: var(--texto-oscuro);
+            border-color: #4b5563;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            padding: 12px;
+            border-radius: 10px;
+            background: var(--tarjeta-clara);
+            border: 1px solid #d1d5db;
+        }
+
+        body.modo-oscuro .panel {
+            background: var(--tarjeta-oscura);
+            border-color: #374151;
+        }
+
+        label {
+            font-size: 12px;
+            margin-top: 8px;
+            display: block;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            outline: none;
+        }
+
+        body.modo-oscuro input,
+        body.modo-oscuro textarea {
+            background: #0f172a;
+            color: var(--texto-oscuro);
+            border-color: #475569;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--principal);
+        }
+
+        button {
+            margin-top: 10px;
+            border: none;
+            background: var(--principal);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            animation: latido 2.5s infinite ease-in-out;
+        }
+
+        @keyframes latido {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+
+        .mensaje-estado {
+            font-size: 13px;
+            margin-top: 5px;
+            min-height: 18px;
+        }
+
+        .mensaje-estado.ok {
+            color: green;
+        }
+
+        .mensaje-estado.error {
+            color: var(--error);
+            animation: temblor 0.3s;
+        }
+
+        @keyframes temblor {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            50% { transform: translateX(3px); }
+            75% { transform: translateX(-2px); }
+            100% { transform: translateX(0); }
+        }
+
+        .tarjeta {
+            padding: 10px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            border: 1px solid #d1d5db;
+            margin-bottom: 10px;
+            animation: aparecer 0.5s ease;
+            cursor: pointer;
+        }
+
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        body.modo-oscuro .tarjeta {
+            background: #1e293b;
+            border-color: #475569;
+        }
+
+        .tarjeta.seleccionada {
+            border-color: #7c3aed;
+            box-shadow: 0 0 5px #7c3aed;
+        }
+
+        .vacio {
+            opacity: 0.7;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="contenedor">
+
+    <header class="cabecera">
+        <div>
+            <div class="titulo">Evidencia 3</div>
+            <small>API REST (Django + ORM)</small>
+        </div>
+
+        <button id="cambiarTema" class="boton-tema">🌙 / ☀️</button>
+    </header>
+
+    <main class="layout">
+
+        <!-- PANEL IZQUIERDO: FORMULARIO -->
+        <section class="panel">
+            <h2>Nuevo Mensaje</h2>
+            <label>Nombre:</label>
+            <input id="entradaNombre" placeholder="Tu nombre">
+
+            <label>Contenido:</label>
+            <textarea id="entradaContenido" placeholder="Escribe algo..."></textarea>
+
+            <button id="btnEnviar">Guardar Mensaje</button>
+
+            <div id="estado" class="mensaje-estado"></div>
+        </section>
+
+        <!-- PANEL DERECHO: FILTROS -->
+        <section class="panel">
+            <h2>Filtros</h2>
+            <label>Buscar:</label>
+            <input id="entradaBuscar" placeholder="Filtrar mensajes...">
+
+            <p>Total: <b id="total"></b></p>
+            <p>Visibles: <b id="visibles"></b></p>
+        </section>
+
+    </main>
+
+    <section style="margin-top:20px;">
+        <h2>Mensajes</h2>
+        <div id="lista"></div>
+        <p id="vacio" class="vacio" style="display:none;">No hay mensajes todavía.</p>
+    </section>
+
+</div>
+
+<script>
+    const API_URL = "http://127.0.0.1:8000/messages/";
+
+    const listaEl = document.getElementById("lista");
+    const vacioEl = document.getElementById("vacio");
+    const totalEl = document.getElementById("total");
+    const visiblesEl = document.getElementById("visibles");
+    const estadoEl = document.getElementById("estado");
+
+    const entradaNombre = document.getElementById("entradaNombre");
+    const entradaContenido = document.getElementById("entradaContenido");
+    const entradaBuscar = document.getElementById("entradaBuscar");
+
+    const btnEnviar = document.getElementById("btnEnviar");
+    const btnTema = document.getElementById("cambiarTema");
+
+    let mensajes = [];
+
+//COMUNICACION CON DJANGO GET Y POST
+    async function cargarMensajes() {
+        try {
+            const res = await fetch(API_URL);
+            mensajes = await res.json();
+            mostrarMensajes();
+        } catch (e) {
+            console.error(e);
+            estadoEl.textContent = "No se pudieron cargar los mensajes.";
+            estadoEl.classList.add("error");
+        }
+    }
+
+    async function crearMensaje() {
+        const nombre = entradaNombre.value.trim();
+        const contenido = entradaContenido.value.trim();
+
+        if (!nombre || !contenido) {
+            estadoEl.textContent = "Faltan datos.";
+            estadoEl.classList.add("error");
+            return;
+        }
+
+        try {
+            const res = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: nombre, content: contenido })
+            });
+
+            if (res.ok) {
+                estadoEl.textContent = "Mensaje guardado.";
+                estadoEl.classList.remove("error");
+                estadoEl.classList.add("ok");
+                entradaNombre.value = "";
+                entradaContenido.value = "";
+                cargarMensajes();
+            } else {
+                throw new Error("POST error");
+            }
+
+        } catch (e) {
+            estadoEl.textContent = "No se pudo guardar.";
+            estadoEl.classList.add("error");
+        }
+    }
+
+
+    function mostrarMensajes() {
+        listaEl.innerHTML = "";
+
+        const filtro = entradaBuscar.value.toLowerCase();
+        const visibles = mensajes.filter(m => 
+            m.name.toLowerCase().includes(filtro) ||
+            m.content.toLowerCase().includes(filtro)
+        );
+
+        totalEl.textContent = mensajes.length;
+        visiblesEl.textContent = visibles.length;
+
+        if (visibles.length === 0) {
+            vacioEl.style.display = "block";
+            return;
+        }
+
+        vacioEl.style.display = "none";
+
+        visibles.forEach(m => {
+            const card = document.createElement("div");
+            card.className = "tarjeta";
+            card.innerHTML = `
+                <b>#${m.id} - ${m.name}</b><br>
+                <span>${m.content}</span><br>
+                <small>Desde la API (ORM)</small>
+            `;
+//Highlightea una de las tarjetas cuando le haces click
+            card.addEventListener("click", () => {
+                document.querySelectorAll(".tarjeta")
+                    .forEach(t => t.classList.remove("seleccionada"));
+                card.classList.add("seleccionada");
+            });
+
+            listaEl.appendChild(card);
+        });
+    }
+
+
+    btnEnviar.addEventListener("click", crearMensaje);
+    entradaBuscar.addEventListener("input", mostrarMensajes);
+//Cambiar el color de la pagina entre oscuro o claro
+    btnTema.addEventListener("click", () => {
+        document.body.classList.toggle("modo-oscuro");
+    });
+
+
+    cargarMensajes();
+</script>
+
+</body>
+</html>
